@@ -38,26 +38,22 @@ type response struct {
 }
 
 func (r request) Link() string {
-	v := url.Values{}
-	if r.opts.from != "" {
-		v.Add("from", r.opts.from)
+	vals := url.Values{}
+
+	MayAdd := func(k, v string) {
+		if v != "" {
+			vals.Add(k, v)
+		}
 	}
-	if r.opts.set != "" {
-		v.Add("set", r.opts.set)
-	}
-	if r.opts.until != "" {
-		v.Add("until", r.opts.until)
-	}
-	if r.opts.prefix != "" {
-		v.Add("metadataPrefix", r.opts.prefix)
-	}
-	if r.verb != "" {
-		v.Add("verb", r.verb)
-	}
-	if r.token != "" {
-		v.Add("resumptionToken", r.token)
-	}
-	encoded := v.Encode()
+
+	MayAdd("from", r.opts.from)
+	MayAdd("set", r.opts.set)
+	MayAdd("until", r.opts.until)
+	MayAdd("metadataPrefix", r.opts.prefix)
+	MayAdd("verb", r.verb)
+	MayAdd("resumptionToken", r.token)
+
+	encoded := vals.Encode()
 	if len(encoded) == 0 {
 		return r.link
 	}
